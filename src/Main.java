@@ -1,3 +1,4 @@
+import java.util.Date;
 
 public class Main {
 
@@ -7,6 +8,10 @@ public class Main {
         dataHandling.print();
 
         DataConventer conventer= new DataConventer();
-        conventer.epochConventer("1551298737");
+        Date d1=conventer.epochConventer("1551301687");
+        Date d2=conventer.epochConventer("1551299254");
+        conventer.differenceTime(d1,d2);
+        JSONHandling json = new JSONHandling();
+        json.print();
     }
 }
