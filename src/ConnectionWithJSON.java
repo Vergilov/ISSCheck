@@ -13,10 +13,6 @@ public class ConnectionWithJSON {
         this.writer = new PrintWriter(new FileWriter(new File("C:\\Users\\Vergilov\\Desktop\\ISS.json"), true));
     }
 
-    public URL getUrl() {
-        return url;
-    }
-
     public BufferedReader getIn() {
         return in;
     }
