@@ -7,6 +7,7 @@ public class JSONHandling{
 
     private ConnectionWithJSON json;
     private JSONObject obj;
+
     public JSONHandling() throws Exception {
         this.json =new ConnectionWithJSON();
         this.obj= buildJSON();
@@ -23,7 +24,7 @@ public class JSONHandling{
         return string;
     }
 
-    public JSONObject buildJSON()  {
+    private JSONObject buildJSON()  {
         String str=JSONasString();
         JSONObject obj=new JSONObject(str);
         if (!obj.getString("message").equals("success")) {
@@ -42,17 +43,20 @@ public class JSONHandling{
     }
 
 
-    public void getTimestamp() {
-        int res = obj.getInt("timestamp");
-        System.out.println(res);
+    public int getTimestamp() {
+        int result = obj.getInt("timestamp");
+        System.out.println(result);
+        return result;
     }
 
-    public void getLatitude(){
+    public String getLatitude(){
         String result = obj.getJSONObject("iss_position").getString("latitude");
         System.out.println(result);
+        return result;
     }
-    public void getLongitude(){
+    public String getLongitude(){
         String result = obj.getJSONObject("iss_position").getString("longitude");
         System.out.println(result);
+        return result;
     }
 }

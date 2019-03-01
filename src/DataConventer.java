@@ -6,8 +6,8 @@ public class DataConventer {
     public DataConventer() {
     }
 
-    public Date epochConventer(String date) {
-        Date expiry = new Date(Long.parseLong(date) * 1000);
+    public Date epochConventer(int date) {
+        Date expiry = new Date(date * 1000);
         System.out.println(expiry);
         return expiry;
     }
