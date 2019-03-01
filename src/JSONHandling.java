@@ -43,20 +43,15 @@ public class JSONHandling{
     }
 
 
-    public int getTimestamp() {
-        int result = obj.getInt("timestamp");
-        System.out.println(result);
-        return result;
+    public Long getTimestamp() {
+        Integer res = obj.getInt("timestamp");
+        return Long.valueOf(res);
     }
 
-    public String getLatitude(){
-        String result = obj.getJSONObject("iss_position").getString("latitude");
-        System.out.println(result);
-        return result;
+    public Double getLatitude(){
+        return Double.parseDouble(obj.getJSONObject("iss_position").getString("latitude"));
     }
-    public String getLongitude(){
-        String result = obj.getJSONObject("iss_position").getString("longitude");
-        System.out.println(result);
-        return result;
+    public Double getLongitude(){
+        return Double.parseDouble(obj.getJSONObject("iss_position").getString("longitude"));
     }
 }

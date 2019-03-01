@@ -10,9 +10,31 @@ public class Main {
         json.getLongitude();
         json.getTimestamp();
         System.out.println("*****************");
-        System.out.println(dataConventer.epochConventer(json.getTimestamp()));
+        dataConventer.epochConventer(json.getTimestamp());
+
+        double goku=distance(json.getLatitude(),-43.7132,json.getLongitude(),-53.3780);
+        System.out.println(goku);
 
 
+    }
+
+    public static double distance(double lat1, double lat2, double lon1,
+                                  double lon2) {
+
+        final int R = 6371; // Radius of the earth
+
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = R * c * 1000; // convert to meters
+
+
+        distance = Math.pow(distance, 2) + Math.pow(0.0, 2);
+
+        return (Math.sqrt(distance))/1000; //KM
     }
 
 }
