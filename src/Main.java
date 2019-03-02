@@ -71,7 +71,6 @@ public class Main implements JSONCreator {
     }
 
 
-
     private static void calculateSpeed() {
         JSONObject last = new JSONObject(arrayList.get(arrayList.size() - 1));
         JSONHandling last1 = new JSONHandling(last);
