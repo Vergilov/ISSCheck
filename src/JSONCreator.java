@@ -5,7 +5,7 @@ import java.util.Scanner;
 public interface JSONCreator {
 
 
-    static  String JSONasString() throws Exception {
+    static String JSONasString() throws Exception {
         ConnectionWithJSON json = new ConnectionWithJSON();
         Scanner scan = new Scanner(json.getIn());
         String string = "";
@@ -24,4 +24,5 @@ public interface JSONCreator {
         }
         return obj;
     }
+
 }
