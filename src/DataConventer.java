@@ -12,7 +12,7 @@ public class DataConventer {
         return expiry;
     }
 
-    public void differenceTime(Date d1,Date d2){
+    public double differenceTime(Date d1,Date d2){
         long diff = d2.getTime() - d1.getTime();
         long diffSeconds = diff / 1000 % 60;
         long diffMinutes = diff / (60 * 1000) % 60;
@@ -21,5 +21,6 @@ public class DataConventer {
         System.out.println("Time in seconds: " + diffSeconds + " seconds.");
         System.out.println("Time in minutes: " + diffMinutes + " minutes.");
         System.out.println("Time in hours: " + diffHours + " hours.");
+        return (double)diff/(60 * 60 * 1000);
     }
 }

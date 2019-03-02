@@ -3,35 +3,19 @@ import org.json.*;
 import java.util.Scanner;
 
 
-public class JSONHandling{
+public class JSONHandling implements JSONCreator{
 
-    private ConnectionWithJSON json;
     private JSONObject obj;
 
     public JSONHandling() throws Exception {
-        this.json =new ConnectionWithJSON();
-        this.obj= buildJSON();
+        this.obj= JSONCreator.buildJSON() ;
+    }
+
+    public JSONHandling(JSONObject json){
+        this.obj= json ;
     }
 
 
-    private String JSONasString() {
-        Scanner scan = new Scanner(json.getIn());
-        String string = "";
-        while (scan.hasNext()) {
-            string += scan.nextLine();
-        }
-        scan.close();
-        return string;
-    }
-
-    private JSONObject buildJSON()  {
-        String str=JSONasString();
-        JSONObject obj=new JSONObject(str);
-        if (!obj.getString("message").equals("success")) {
-            return null;
-        }
-        return obj;
-    }
 
 
     public void print() {
