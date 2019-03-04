@@ -6,9 +6,7 @@ public class Main implements JSONCreator {
 
 
     public static void main(String[] args) throws Exception {
-
         menu();
-
     }
 
 
@@ -33,9 +31,12 @@ public class Main implements JSONCreator {
                 action = in.nextInt();
                 if (checkRange(action) || in.hasNextInt()) {
                     switch (action) {
+                        default:
+                            System.out.println(" ISS ");
+                            break;
                         case 1:
                             menuMethods.addJSONtoArray();
-                            menuMethods.addToFile();
+                            menuMethods.backupToFile();
                             break;
                         case 2:
                             menuMethods.currentStatus();

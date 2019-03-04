@@ -1,17 +1,14 @@
 import org.json.JSONObject;
 
-import javax.swing.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.*;
 
 public class MenuMethods implements JSONDataOutput, DataConventer {
-    private List<String> arrayList;
+    private List<String> arrayList = new ArrayList<>();
+
 
     public MenuMethods() {
-        this.arrayList = new ArrayList<>();
     }
 
 
@@ -42,7 +39,7 @@ public class MenuMethods implements JSONDataOutput, DataConventer {
         double lastLongitude = JSONDataOutput.getLatitude(last);
 
         double result = distance(lastLatitude, firstLatitude, lastLongitude, firstLongitude);
-        System.out.format("%.2f KM", result);
+        System.out.format("Distance from start to end: %.2f KM %n", result);
     }
 
     private JSONObject createJSONOBject(String obj) {
@@ -69,50 +66,59 @@ public class MenuMethods implements JSONDataOutput, DataConventer {
 
     public void addJSONtoArray() throws Exception {
         arrayList.add(JSONCreator.buildJSON().toString());
-        System.out.println("SUCCESSFUL");
     }
 
     public void currentStatus() throws Exception {
         System.out.println(JSONCreator.buildJSON().toString());
     }
 
-    public void addToFile() throws Exception {
+    public void backupToFile() throws Exception {
         ConnectionWithJSON connectionWithJSON = new ConnectionWithJSON();
+        File desktop = new File(System.getProperty("user.home"), "/Desktop/ISS/Backup");
+        if (!desktop.exists()) {
+            desktop.mkdirs();
+        }
+        File output = new File(desktop.getAbsolutePath(),"ISSBackup.json");
+        PrintWriter pw = new PrintWriter(new FileWriter(output, true));
+
         try {
+
             LineNumberReader reader = new LineNumberReader(connectionWithJSON.getIn());
             String inputLine;
             while ((inputLine = reader.readLine()) != null) {
-                connectionWithJSON.getWriter().println(inputLine);
-                System.out.println(inputLine);
+                pw.println(inputLine);
             }
-            connectionWithJSON.getIn().close();
-            connectionWithJSON.getWriter().close();
-        } catch (
-                IOException ex) {
+        } catch (IOException ex) {
             ex.printStackTrace();
+        } finally {
+            pw.close();
+            connectionWithJSON.getIn().close();
+        }
+    }
+
+
+    public void saveToFile() throws Exception {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+        File desktop = new File(System.getProperty("user.home"), "/Desktop/ISS/SavedLog");
+        if (!desktop.exists()) {
+            desktop.mkdir();
+        }
+        StringBuilder time = new StringBuilder(timeStamp + "ISS.txt");
+        File output = new File(desktop, time.toString());
+        PrintWriter pw = new PrintWriter(output);
+        try {
+            for (String inputLine : arrayList) {
+                pw.println(inputLine);
+            }
+            System.out.println(output.getAbsolutePath());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            pw.close();
         }
     }
 
     public List<String> getArrayList() {
         return arrayList;
     }
-
-    public void saveToFile() throws Exception {
-        try {
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-            File desktop = new File(System.getProperty("user.home"), "/Desktop");
-            StringBuilder time = new StringBuilder(timeStamp + "ISS.txt");
-            File output = new File(desktop, time.toString());
-            PrintWriter pw = new PrintWriter(output);
-            for (String inputLine : arrayList) {
-                pw.println(inputLine);
-            }
-            pw.close();
-            System.out.println(output.getAbsolutePath());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-    }
-
 }
