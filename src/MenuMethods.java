@@ -1,48 +1,57 @@
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.util.ArrayList;
-import java.util.Date;
+import javax.swing.*;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.*;
 
-public class MenuMethods {
-    private ArrayList<String> arrayList;
-    private DataConventer dataConventer;
+public class MenuMethods implements JSONDataOutput, DataConventer {
+    private List<String> arrayList;
 
     public MenuMethods() {
         this.arrayList = new ArrayList<>();
-        this.dataConventer = new DataConventer();
     }
 
 
-    public void calculateSpeed() {
-        JSONObject oneBeforeLast = new JSONObject(arrayList.get(arrayList.size() - 2));
-        JSONObject last = new JSONObject(this.arrayList.get(arrayList.size() - 1));
-        JSONHandling oneBeforeLast1 = new JSONHandling(oneBeforeLast);
-        JSONHandling last1 = new JSONHandling(last);
+    public void calculateSpeedFromLastTwoPoints() {
+        JSONObject oneBeforeLastJSONObject = createJSONOBject(arrayList.get(arrayList.size() - 2));
+        JSONObject lastJSONObject = createJSONOBject(this.arrayList.get(arrayList.size() - 1));
 
-        Date oneBeforeLastDate = dataConventer.epochConventer(oneBeforeLast1.getTimestamp());
-        Date lastDate = dataConventer.epochConventer(last1.getTimestamp());
+        double oneBeforeLastLatidue = JSONDataOutput.getLatitude(oneBeforeLastJSONObject);
+        double oneBeforeLastLongtitude = JSONDataOutput.getLongitude(oneBeforeLastJSONObject);
+        double lastLatitude = JSONDataOutput.getLatitude(lastJSONObject);
+        double lastLongtitude = JSONDataOutput.getLongitude(lastJSONObject);
+        Date oneBeforeLastDate = DataConventer.epochConventer(JSONDataOutput.getTimestamp(oneBeforeLastJSONObject));
+        Date lastDate = DataConventer.epochConventer(JSONDataOutput.getTimestamp(lastJSONObject));
 
-        double result = (distance(last1.getLatitude(), oneBeforeLast1.getLatitude(), last1.getLongitude(), oneBeforeLast1.getLongitude())) / (dataConventer.differenceTime(oneBeforeLastDate, lastDate));
-        System.out.format("%.2f KM/H", result);
+
+        double result = (distance(lastLatitude, oneBeforeLastLatidue, lastLongtitude, oneBeforeLastLongtitude)) / (DataConventer.differenceTime(oneBeforeLastDate, lastDate)); // distance/ diffrenceTime
+        System.out.println((int) result + " KM/H");
     }
+
 
     public void calculateDistance() {
-        JSONObject first = new JSONObject(arrayList.get(0));
-        JSONHandling first1 = new JSONHandling(first);
+        JSONObject first = createJSONOBject(arrayList.get(0));
+        double firstLatitude = JSONDataOutput.getLatitude(first);
+        double firstLongitude = JSONDataOutput.getLongitude(first);
 
-        JSONObject lastElement = new JSONObject(arrayList.get(arrayList.size() - 1));
-        JSONHandling lastElement1 = new JSONHandling(lastElement);
+        JSONObject last = createJSONOBject(arrayList.get(arrayList.size() - 1));
+        double lastLatitude = JSONDataOutput.getLatitude(last);
+        double lastLongitude = JSONDataOutput.getLatitude(last);
 
-        double result = distance(lastElement1.getLatitude(), first1.getLatitude(), lastElement1.getLongitude(), first1.getLongitude());
+        double result = distance(lastLatitude, firstLatitude, lastLongitude, firstLongitude);
         System.out.format("%.2f KM", result);
     }
 
+    private JSONObject createJSONOBject(String obj) {
+        return new JSONObject(obj);
+    }
 
 
     private double distance(double lat1, double lat2, double lon1,
-                           double lon2) {
+                            double lon2) {
         //Haversine_formula
         final int R = 6371; // Radius of the earth
         double latDistance = Math.toRadians(lat2 - lat1);
@@ -83,7 +92,27 @@ public class MenuMethods {
             ex.printStackTrace();
         }
     }
-    public ArrayList<String> getArrayList() {
+
+    public List<String> getArrayList() {
         return arrayList;
     }
+
+    public void saveToFile() throws Exception {
+        try {
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+            File desktop = new File(System.getProperty("user.home"), "/Desktop");
+            StringBuilder time = new StringBuilder(timeStamp + "ISS.txt");
+            File output = new File(desktop, time.toString());
+            PrintWriter pw = new PrintWriter(output);
+            for (String inputLine : arrayList) {
+                pw.println(inputLine);
+            }
+            pw.close();
+            System.out.println(output.getAbsolutePath());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
 }

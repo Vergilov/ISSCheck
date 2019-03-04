@@ -1,28 +1,21 @@
-import org.json.*;
+import org.json.JSONObject;
 
 import static java.lang.Long.valueOf;
 
+public interface JSONDataOutput {
 
-public class JSONHandling implements JSONCreator{
-
-    private JSONObject obj;
-
-    public JSONHandling(JSONObject json){
-        this.obj= json ;
-    }
-
-
-
-
-    public Long getTimestamp() {
+    static Long getTimestamp(JSONObject obj) {
         int res = obj.getInt("timestamp");
         return valueOf(res);
     }
 
-    public Double getLatitude(){
+    static Double getLatitude(JSONObject obj) {
         return Double.parseDouble(obj.getJSONObject("iss_position").getString("latitude"));
     }
-    public Double getLongitude(){
+
+    static Double getLongitude(JSONObject obj) {
         return Double.parseDouble(obj.getJSONObject("iss_position").getString("longitude"));
     }
 }
+
+

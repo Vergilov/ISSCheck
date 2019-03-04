@@ -6,6 +6,7 @@ public class Main implements JSONCreator {
 
 
     public static void main(String[] args) throws Exception {
+
         menu();
 
     }
@@ -20,11 +21,12 @@ public class Main implements JSONCreator {
         try {
         while (!quit) {
             System.out.println("Choose a option:" +
-                    "\n 1: ADD current record to Arraylist from JSON ISS Website" +
+                    "\n 1: Add current record to Arraylist from JSON ISS Website" +
                     "\n 2: Show Current status of ISS" +
                     "\n 3: Print all records" +
                     "\n 4: Calculate Speed" +
                     "\n 5: Calculate distance from Start to End" +
+                    "\n 6: Add result from ArrayList to file"+
                     "\n 0: Quit"+
             "\n********************************************************************************\n");
 
@@ -52,7 +54,7 @@ public class Main implements JSONCreator {
                             if (menuMethods.getArrayList().isEmpty() || menuMethods.getArrayList().size() == 1) {
                                 System.out.println("Please add at least 2 records to Array first!");
                             } else {
-                                menuMethods.calculateSpeed();
+                                menuMethods.calculateSpeedFromLastTwoPoints();
                             }
 
                             break;
@@ -61,6 +63,13 @@ public class Main implements JSONCreator {
                                 System.out.println("Please add at least 2 records to Array first!");
                             } else {
                                 menuMethods.calculateDistance();
+                            }
+                            break;
+                        case 6:
+                            if (menuMethods.getArrayList().isEmpty()) {
+                                System.out.println("Please add input to Arraylist first");
+                            } else {
+                                menuMethods.saveToFile();
                             }
                             break;
                         case 0:
@@ -78,8 +87,8 @@ public class Main implements JSONCreator {
 
     private static boolean checkRange(int action) {
         boolean range = true;
-        if (action < 0 || action > 5) {
-            System.out.println("Type a Option from 0 to 5!");
+        if (action < 0 || action > 6) {
+            System.out.println("Type a Option from 0 to 6!");
             range = false;
         }
         return range;
