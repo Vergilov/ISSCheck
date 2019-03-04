@@ -1,5 +1,7 @@
 import org.json.*;
 
+import static java.lang.Long.valueOf;
+
 
 public class JSONHandling implements JSONCreator{
 
@@ -13,8 +15,8 @@ public class JSONHandling implements JSONCreator{
 
 
     public Long getTimestamp() {
-        Integer res = obj.getInt("timestamp");
-        return Long.valueOf(res);
+        int res = obj.getInt("timestamp");
+        return valueOf(res);
     }
 
     public Double getLatitude(){

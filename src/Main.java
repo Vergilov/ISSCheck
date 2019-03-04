@@ -1,19 +1,13 @@
-import org.json.JSONObject;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main implements JSONCreator {
-    private static ArrayList<String> arrayList = new ArrayList<>();
-    private static DataConventer dataConventer = new DataConventer();
+    private static MenuMethods menuMethods = new MenuMethods();
 
 
-
-    public static void main(String[] args) throws Exception  {
-
+    public static void main(String[] args) throws Exception {
         menu();
+
     }
 
 
@@ -21,9 +15,9 @@ public class Main implements JSONCreator {
         boolean quit = false;
         Scanner in = new Scanner(System.in);
         int action;
-
-
+        System.out.println("\n********************************************************************************");
         System.out.println("WELCOME TO ISS ANALYST:");
+        try {
         while (!quit) {
             System.out.println("Choose a option:" +
                     "\n 1: ADD current record to Arraylist from JSON ISS Website" +
@@ -31,96 +25,55 @@ public class Main implements JSONCreator {
                     "\n 3: Print all records" +
                     "\n 4: Calculate Speed" +
                     "\n 5: Calculate distance from Start to End" +
-                    "\n 0: Quit");
-            action = in.nextInt();
-            if (checkRange(action)) {
-                switch (action) {
-                    case 1:
-                        addJSONtoArray();
-                        addToFile();
-                        break;
-                    case 2:
-                        currentStatus();
-                        break;
-                    case 3:
-                        System.out.println("Print all elements from Arraylist: ");
-                        for (String element : arrayList) {
-                            System.out.println(element);
-                        }
-                        break;
-                    case 4:
-                        if (arrayList.isEmpty() || arrayList.size() == 1) {
-                            System.out.println("Please add at least 2 records to Array first!");
-                        } else {
-                            calculateSpeed();
-                        }
-                        break;
-                    case 5:
-                        if (arrayList.isEmpty() || arrayList.size() == 1) {
-                            System.out.println("Please add at least 2 records to Array first!");
-                        } else {
-                            calculateDistance();
-                        }
-                        break;
-                    case 0:
-                        quit = true;
-                        break;
+                    "\n 0: Quit"+
+            "\n********************************************************************************\n");
+
+                action = in.nextInt();
+                if (checkRange(action) || in.hasNextInt()) {
+                    switch (action) {
+                        case 1:
+                            menuMethods.addJSONtoArray();
+                            menuMethods.addToFile();
+                            break;
+                        case 2:
+                            menuMethods.currentStatus();
+                            break;
+                        case 3:
+                            System.out.println("Print all elements from Arraylist: ");
+                            if (menuMethods.getArrayList().isEmpty()) {
+                                System.out.println("ArrayList its Empty");
+                            } else {
+                                for (String element : menuMethods.getArrayList()) {
+                                    System.out.println(element);
+                                }
+                            }
+                            break;
+                        case 4:
+                            if (menuMethods.getArrayList().isEmpty() || menuMethods.getArrayList().size() == 1) {
+                                System.out.println("Please add at least 2 records to Array first!");
+                            } else {
+                                menuMethods.calculateSpeed();
+                            }
+
+                            break;
+                        case 5:
+                            if (menuMethods.getArrayList().isEmpty() || menuMethods.getArrayList().size() == 1) {
+                                System.out.println("Please add at least 2 records to Array first!");
+                            } else {
+                                menuMethods.calculateDistance();
+                            }
+                            break;
+                        case 0:
+                            quit = true;
+                            break;
+                    }
                 }
             }
+        } catch (InputMismatchException e) {
+            System.out.print( " Wrong format!"+
+                    "\n Type a Option from 0 to 5!");
+            menu();
         }
-    }
-
-
-    private static void calculateSpeed() {
-        JSONObject last = new JSONObject(arrayList.get(arrayList.size() - 1));
-        JSONHandling last1 = new JSONHandling(last);
-        JSONObject prelast = new JSONObject(arrayList.get(arrayList.size() - 2));
-        JSONHandling prelast1 = new JSONHandling(prelast);
-
-        Date prelastDate = dataConventer.epochConventer(prelast1.getTimestamp());
-        Date lastDate = dataConventer.epochConventer(last1.getTimestamp());
-
-        double result = (distance(last1.getLatitude(), prelast1.getLatitude(), last1.getLongitude(), prelast1.getLongitude())) / (dataConventer.differenceTime(prelastDate, lastDate));
-        System.out.format("%.2f KM/H \n", result);
-    }
-
-    private static void calculateDistance() {
-        JSONObject first = new JSONObject(arrayList.get(0));
-        JSONHandling first1 = new JSONHandling(first);
-
-        JSONObject lastElement = new JSONObject(arrayList.get(arrayList.size() - 1));
-        JSONHandling lastElement1 = new JSONHandling(lastElement);
-
-        double result = distance(lastElement1.getLatitude(), first1.getLatitude(), lastElement1.getLongitude(), first1.getLongitude());
-        System.out.format("%.3f KM \n", result);
-    }
-
-    private static double distance(double lat1, double lat2, double lon1,
-                                   double lon2) {
-
-        final int R = 6371; // Radius of the earth
-
-        double latDistance = Math.toRadians(lat2 - lat1);
-        double lonDistance = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double distance = R * c * 1000; // convert to meters
-
-
-        distance = Math.pow(distance, 2) + Math.pow(0.0, 2);
-
-        return (Math.sqrt(distance)) / 1000; //KM
-    }
-
-    private static void addJSONtoArray() throws Exception {
-        arrayList.add(JSONCreator.buildJSON().toString());
-        System.out.println("SUCCESSFUL");
-    }
-
-    private static void currentStatus() throws Exception {
-        System.out.println(JSONCreator.buildJSON().toString());
     }
 
     private static boolean checkRange(int action) {
@@ -131,22 +84,4 @@ public class Main implements JSONCreator {
         }
         return range;
     }
-
-    private static void addToFile() throws Exception{
-        ConnectionWithJSON connectionWithJSON=new ConnectionWithJSON();
-        try {
-            LineNumberReader reader = new LineNumberReader(connectionWithJSON.getIn());
-            String inputLine;
-            while ((inputLine = reader.readLine()) != null) {
-                connectionWithJSON.getWriter().println(inputLine);
-                System.out.println(inputLine);
-            }
-            connectionWithJSON.getIn().close();
-            connectionWithJSON.getWriter().close();
-        } catch (
-                IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
 }
