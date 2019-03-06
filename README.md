@@ -12,6 +12,8 @@ http://api.open-notify.org/iss-now.json
 
 To execute you need only additional library (org.json).
 
+IDE: Intellij Idea Community edition.
+
 Technologies:
 -Clear Java
 -JSON ORG library.
