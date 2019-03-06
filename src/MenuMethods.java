@@ -29,16 +29,24 @@ public class MenuMethods implements JSONDataOutput, DataConventer {
     }
 
 
-    public void calculateDistance() {
-        JSONObject first = createJSONOBject(arrayList.get(0));
+    private double calculateDistanceBetweenTwoPoints(String one,String two) {
+        JSONObject first = createJSONOBject(one);
         double firstLatitude = JSONDataOutput.getLatitude(first);
         double firstLongitude = JSONDataOutput.getLongitude(first);
 
-        JSONObject last = createJSONOBject(arrayList.get(arrayList.size() - 1));
-        double lastLatitude = JSONDataOutput.getLatitude(last);
-        double lastLongitude = JSONDataOutput.getLatitude(last);
+        JSONObject second = createJSONOBject(two);
+        double secondLatitude = JSONDataOutput.getLatitude(second);
+        double secondLongtidute = JSONDataOutput.getLongitude(second);
+        return distance(secondLatitude, firstLatitude, secondLongtidute, firstLongitude);
+    }
 
-        double result = distance(lastLatitude, firstLatitude, lastLongitude, firstLongitude);
+    public void calculateOverallDistance(){
+        double result=0;
+        for (int i=0;i<=arrayList.size()-2;i++){
+            double current=calculateDistanceBetweenTwoPoints(arrayList.get(i),arrayList.get(i+1));
+            System.out.format("Distance between position "+(i+1)+" and position "+(i+2)+" ->  %.2f KM %n",current);
+            result+=current;
+        }
         System.out.format("Distance from start to end: %.2f KM %n", result);
     }
 
@@ -66,10 +74,11 @@ public class MenuMethods implements JSONDataOutput, DataConventer {
 
     public void addJSONtoArray() throws Exception {
         arrayList.add(JSONCreator.buildJSON().toString());
+        System.out.println("Successful Added: "+arrayList.get(arrayList.size()-1));
     }
 
     public void currentStatus() throws Exception {
-        System.out.println(JSONCreator.buildJSON().toString());
+        System.out.println("Current Status: "+JSONCreator.buildJSON().toString());
     }
 
     public void backupToFile() throws Exception {
@@ -103,14 +112,14 @@ public class MenuMethods implements JSONDataOutput, DataConventer {
         if (!desktop.exists()) {
             desktop.mkdir();
         }
-        StringBuilder time = new StringBuilder(timeStamp + "ISS.txt");
-        File output = new File(desktop, time.toString());
+        String time = (timeStamp + "ISS.txt");
+        File output = new File(desktop, time);
         PrintWriter pw = new PrintWriter(output);
         try {
             for (String inputLine : arrayList) {
                 pw.println(inputLine);
             }
-            System.out.println(output.getAbsolutePath());
+            System.out.println("Created file: "+output.getAbsolutePath());
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {

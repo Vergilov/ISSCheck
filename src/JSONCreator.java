@@ -20,6 +20,7 @@ public interface JSONCreator {
         String str=JSONasString();
         JSONObject obj=new JSONObject(str);
         if (!obj.getString("message").equals("success")) {
+            System.out.println("Something wrong!");
             return null;
         }
         return obj;

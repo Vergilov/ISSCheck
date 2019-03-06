@@ -63,7 +63,7 @@ public class Main implements JSONCreator {
                             if (menuMethods.getArrayList().isEmpty() || menuMethods.getArrayList().size() == 1) {
                                 System.out.println("Please add at least 2 records to Array first!");
                             } else {
-                                menuMethods.calculateDistance();
+                                menuMethods.calculateOverallDistance();
                             }
                             break;
                         case 6:
